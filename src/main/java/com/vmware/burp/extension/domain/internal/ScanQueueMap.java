@@ -48,7 +48,7 @@ public class ScanQueueMap {
       return map.keySet();
    }
 
-   private List<IScanQueueItem> getQueue(String url) {
+   public List<IScanQueueItem> getQueue(String url) {
       return map.get(url);
    }
 

@@ -12,6 +12,7 @@ import com.vmware.burp.extension.domain.Config;
 import com.vmware.burp.extension.domain.HttpMessageList;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssueList;
+import com.vmware.burp.extension.domain.ScanQueueUrlList;
 import com.vmware.burp.extension.domain.ScanProgress;
 import com.vmware.burp.extension.domain.ScopeItem;
 import com.vmware.burp.extension.service.BurpService;
@@ -240,6 +241,7 @@ public class BurpController {
       burp.scan(baseUrl);
    }
 
+
    @ApiOperation(value = "Deletes the active scan queue map from memory", notes = "Deletes the scan queue map from memory, not from Burp suite UI.")
    @ApiResponses(value = {
          @ApiResponse(code = 200, message = "Success"),
@@ -348,6 +350,20 @@ public class BurpController {
          log.info("Burp is stopped");
       }
 
+  /* NEW */
+   @ApiOperation(value = "Get the current scan queue (urls)", notes = "Todo")
+   @ApiResponses(value = {
+         @ApiResponse(code = 200, message = "Success", response = ScanQueueUrlList.class),
+         @ApiResponse(code = 500, message = "Failure")
+   })
+   @RequestMapping(method = GET, value = "/scanner/scans/queue")
+   public ScanQueueUrlList getQueue() {
+      //log.info("entering 'getQueue()' function in file 'BurpController.java'");
+      ScanQueueUrlList scanQueueUrlList = new ScanQueueUrlList();
+      scanQueueUrlList.setScanQueueUrls(burp.getQueue());
+      return scanQueueUrlList;
+   }
+
    @ExceptionHandler()
    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
       response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
@@ -363,4 +379,6 @@ public class BurpController {
          throws IOException {
       response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
    }
+
+
 }

@@ -15,6 +15,10 @@ import com.vmware.burp.extension.domain.ConfigItem;
 import com.vmware.burp.extension.domain.HttpMessage;
 import com.vmware.burp.extension.domain.ReportType;
 import com.vmware.burp.extension.domain.ScanIssue;
+import com.vmware.burp.extension.domain.ScanQueueUrl;
+import com.vmware.burp.extension.domain.ScanQueueUrlList;
+import com.vmware.burp.extension.domain.ScanQueueItem;
+import com.vmware.burp.extension.domain.ScanQueueItemList;
 import com.vmware.burp.extension.domain.internal.ScanQueueMap;
 import com.vmware.burp.extension.utils.Utils;
 import org.slf4j.Logger;
@@ -37,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class BurpService {
@@ -252,5 +257,47 @@ public class BurpService {
       }
       BurpExtender.getInstance().getCallbacks().exitSuite(promptUser);
    }
+
+   /* NEW */
+   public List<ScanQueueUrl>  getQueue() {
+       log.info("entering 'getQueue()' function in file 'BurpService.java'");
+       //log.info("listing URLs in queue (keys):");
+       //Set<String> urlsList = scans.getUrls();
+       /*for(String url : urlsList){
+           log.info(url.toString());
+           //List<IScanQueueItem> queueItems = scans.getUrls(url);
+           log.info("listing ScanQueueItems in for url: " + url);
+           for (IScanQueueItem iScanQueueItem : scans.getQueue(url)) {
+              log.info("status: {}", iScanQueueItem.getStatus());
+              log.info("%completed: {}", iScanQueueItem.getPercentageComplete());
+              log.info("%getNumRequests: {}", iScanQueueItem.getNumRequests());
+              log.info("%getNumErrors: {}", iScanQueueItem.getNumErrors());
+              log.info("%getNumInsertionPoints: {}", iScanQueueItem.getNumInsertionPoints());
+           }
+       }
+       List<HttpMessage> httpMessageList = new ArrayList<>();
+       for (String s : scans.getUrls()) {
+          httpMessageList.add(new HttpMessage(s));
+       }*/
+       //return scans.getUrls();
+       List<ScanQueueUrl> scanQueueUrls = new ArrayList<>();
+       Set<String> urlsList = scans.getUrls();
+       for(String url : urlsList){
+          scanQueueUrls.add(
+            //new ScanQueueUrl(url,new ScanQueueItemList(scans.getQueue(url))));
+            new ScanQueueUrl(url, scans.getQueue(url)));
+       }
+       return scanQueueUrls;
+   }
+
+   /*public List<ScanIssue> getIssues(String urlPrefix) {
+      List<ScanIssue> scanIssues = new ArrayList<>();
+      IScanIssue[] iScanIssues = BurpExtender.getInstance().getCallbacks()
+            .getScanIssues(urlPrefix);
+      for (IScanIssue iScanIssue : iScanIssues) {
+         scanIssues.add(new ScanIssue(iScanIssue));
+      }
+      return scanIssues;
+   }*/
 
 }
